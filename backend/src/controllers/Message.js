@@ -21,7 +21,11 @@ exports.create = (req, res) => {
 
   try {
     message.save();
-    res.status(201).json(message);
+    res.send({
+      status: 201,
+      error: false,
+      data: message,
+    });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -72,7 +76,7 @@ exports.findAllExist = (req, res) => {
         status: 200,
         error: false,
         data: dataUsername,
-        exist: dataUsername > 0 ? true : false
+        exist: dataUsername > 0 ? true : false,
       });
     });
   } catch (error) {
