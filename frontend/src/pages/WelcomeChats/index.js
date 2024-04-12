@@ -1,9 +1,33 @@
+import { useState, useEffect } from "react";
 import Footer from "../../components/Footer";
+import { storage, logout } from "../../utils";
+import { useNavigate } from "react-router-dom";
 
-const WelcomeChatsPage = () => {
-  const handleSubmit = (e) => {
-    console.log("submit");
+const WelcomeChatsPage = ({socket}) => {
+  const navigate = useNavigate();
+  const [values, setValues] = useState({
+    username: "",
+    room: "",
+  });
+
+  const joinRoom = (e) => {
+    e.preventDefault();
+
+    if (values.room !== "" && values.username !== "") {
+      socket.emit("join_room", values);
+      storage.set("token-chats", "success");
+      navigate(`/chats?username=${values.username}&room=${values.room}`);
+    }
   };
+
+  const onChange = (e) => {
+    setValues({ ...values, [e.target.name]: e.target.value });
+  };
+
+  useEffect(() => {
+    logout();
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <div>
@@ -11,7 +35,7 @@ const WelcomeChatsPage = () => {
         <div className="w-full flex flex-col justify-center items-center px-10 sm:px-16 py-16 sm:w-1/3">
           <form
             className="flex flex-col items-center w-full"
-            onSubmit={handleSubmit}
+            onSubmit={joinRoom}
           >
             <label className="block mb-10 text-3xl lg:text-4xl font-bold text-black ">
               Join Chatroom
@@ -22,7 +46,7 @@ const WelcomeChatsPage = () => {
                 placeholder="Username"
                 name="username"
                 required
-                //   onChange={onChange}
+                onChange={onChange}
               />
             </div>
             <div className="w-full mb-6">
@@ -30,9 +54,9 @@ const WelcomeChatsPage = () => {
                 type="text"
                 placeholder="Room ID"
                 className="shadow-sm border bg-chat-smooth-white border-gray-300 text-gray-900 text-md rounded-md block w-full p-2 focus:outline-none"
-                name="roomid"
+                name="room"
                 required
-                //   onChange={onChange}
+                onChange={onChange}
               />
             </div>
             <button className="font-extrabold text-white bg-chat-green py-3 px-20 sm:px-32 mt-16 rounded-full cursor-pointer">

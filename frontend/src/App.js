@@ -3,6 +3,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import routes from "./routes";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { isLogin } from "./utils";
+import io from "socket.io-client";
+const socket = io("http://localhost:3001");
 
 function App() {
   return (
@@ -18,10 +20,10 @@ function App() {
                   <Suspense fallback={<></>}>
                     {data.restricted !== false ? (
                       <ProtectedRoute user={isLogin()}>
-                        <data.component />
+                        <data.component socket={socket}/>
                       </ProtectedRoute>
                     ) : (
-                      <data.component />
+                      <data.component socket={socket}/>
                     )}
                   </Suspense>
                 }
