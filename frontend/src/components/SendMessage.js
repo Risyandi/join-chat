@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { IoMdArrowRoundUp } from "react-icons/io";
+import { createMessageChat } from "../api/messageChat";
 
 const SendMessage = ({ socket, username, room }) => {
   const [message, setMessage] = useState("");
@@ -10,6 +11,12 @@ const SendMessage = ({ socket, username, room }) => {
        * Send message to server. We can't specify who we send the message to from the frontend.
        * We can only send to server. Server can then send message to rest of users in room
        */
+      let formdata = {
+        username: username,
+        room: room,
+        message: message,
+      };
+      createMessageChat(formdata);
       const createdTime = Date.now();
       socket.emit("send_message", { username, room, message, createdTime });
       setMessage("");
