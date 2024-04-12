@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Footer from "../../components/Footer";
-import { storage, logout } from "../../utils";
 import { useNavigate } from "react-router-dom";
 
-const WelcomeChatsPage = ({socket}) => {
+const WelcomeChatsPage = ({ socket }) => {
   const navigate = useNavigate();
   const [values, setValues] = useState({
     username: "",
@@ -15,7 +14,6 @@ const WelcomeChatsPage = ({socket}) => {
 
     if (values.room !== "" && values.username !== "") {
       socket.emit("join_room", values);
-      storage.set("token-chats", "success");
       navigate(`/chats?username=${values.username}&room=${values.room}`);
     }
   };
@@ -24,15 +22,10 @@ const WelcomeChatsPage = ({socket}) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
-  useEffect(() => {
-    logout();
-    // eslint-disable-next-line
-  }, []);
-
   return (
     <div>
       <div className="flex flex-col items-center min-h-screen">
-        <div className="w-full flex flex-col justify-center items-center px-10 sm:px-16 py-16 sm:w-1/3">
+        <div className="w-full flex flex-col justify-center items-center px-10 sm:px-16 py-16 lg:w-1/3">
           <form
             className="flex flex-col items-center w-full"
             onSubmit={joinRoom}

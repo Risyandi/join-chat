@@ -1,13 +1,21 @@
 import { useState, useEffect } from "react";
 import SendMessage from "../../components/SendMessage";
 import Header from "../../components/Header";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 const ChatsPage = ({ socket }) => {
+  const navigate = useNavigate();
   const [messagesRecieved, setMessagesReceived] = useState([]);
   const [searchParams] = useSearchParams();
+
   const room = searchParams.get("room");
   const username = searchParams.get("username");
+
+  useEffect(() => {
+    if (room === null && username === null) {
+      navigate(`/`);
+    }
+  }, [navigate, room, username]);
 
   // Runs whenever a socket event is recieved from the server
   useEffect(() => {
@@ -26,7 +34,7 @@ const ChatsPage = ({ socket }) => {
     return () => socket.off("receive_message");
   }, [socket, username]);
 
-  // dd/mm/yyyy, hh:mm:ss
+  // format date -> dd/mm/yyyy, hh:mm:ss
   function formatDateFromTimestamp(timestamp) {
     const date = new Date(timestamp);
     return date.toLocaleString();

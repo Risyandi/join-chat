@@ -16,6 +16,13 @@ const SendMessage = ({ socket, username, room }) => {
     }
   };
 
+  const handleInputPress = async (e) => {
+    let eventEnter = e.key;
+    if (eventEnter === "Enter") {
+      sendMessage();
+    }
+  };
+
   return (
     <div className="flex justify-center">
       <div className="fixed bottom-0 w-[95%] mb-5">
@@ -25,6 +32,7 @@ const SendMessage = ({ socket, username, room }) => {
           type="text"
           name="messages"
           onChange={(e) => setMessage(e.target.value)}
+          onKeyUp={handleInputPress}
           value={message}
         />
         <div
