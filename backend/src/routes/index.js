@@ -23,7 +23,7 @@ module.exports = function routes(app) {
   });
 
   // message
-  router.post("/message", message.create);
-  router.get("/message", message.findAll);
-  router.get("/username-message", message.findAllExist);
+  router.post("/create", message.create);
+  router.post("/message", message.findAll);
+  router.post("/username-message", message.findAllExist);
 };
