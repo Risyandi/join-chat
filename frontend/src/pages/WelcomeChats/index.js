@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Footer from "../../components/Footer";
+import { getExistUsername } from "../../api/messageChat";
 import { useNavigate } from "react-router-dom";
 
 const WelcomeChatsPage = ({ socket }) => {
@@ -8,13 +9,22 @@ const WelcomeChatsPage = ({ socket }) => {
     username: "",
     room: "",
   });
+  const [errors, setErrors] = useState(false);
 
   const joinRoom = (e) => {
     e.preventDefault();
 
     if (values.room !== "" && values.username !== "") {
-      socket.emit("join_room", values);
-      navigate(`/chats?username=${values.username}&room=${values.room}`);
+      getExistUsername({ username: values.username }).then((value) => {
+        if (value.exist === true) {
+          setErrors(true);
+        } else {
+          setErrors(false);
+          socket.emit("join_room", values);
+          navigate(`/chats?username=${values.username}&room=${values.room}`);
+        }
+        console.log(value, "usename exist");
+      });
     }
   };
 
@@ -41,6 +51,9 @@ const WelcomeChatsPage = ({ socket }) => {
                 required
                 onChange={onChange}
               />
+              {errors ? (
+                <p className="text-red-600">username is exist</p>
+              ) : null}
             </div>
             <div className="w-full mb-6">
               <input
