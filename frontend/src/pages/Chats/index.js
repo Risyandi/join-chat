@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import SendMessage from "../../components/SendMessage";
 import Header from "../../components/Header";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { getMessageAllByRoom } from "../../api/messageChat";
 
 const ChatsPage = ({ socket }) => {
   const navigate = useNavigate();
@@ -33,6 +34,21 @@ const ChatsPage = ({ socket }) => {
     // Remove event listener on component unmount
     return () => socket.off("receive_message");
   }, [socket, username]);
+
+  const fethMessageInRoom = () => {
+    getMessageAllByRoom({ room: room })
+      .then((result) => {
+        setMessagesReceived((state) => [...state, ...result.data]);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  useEffect(() => {
+    fethMessageInRoom();
+    // eslint-disable-next-line
+  }, [room]);
 
   // format date -> dd/mm/yyyy, hh:mm:ss
   function formatDateFromTimestamp(timestamp) {
